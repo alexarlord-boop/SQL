@@ -1,0 +1,46 @@
+/****** Скрипт для команды задачи 2  ******/
+
+
+
+/****** Скрипт для задачи 3  ******/
+
+SELECT [City] INTO #StrlsCity FROM [Person].[Address] 
+EXCEPT
+SELECT City FROM [Sales].[vStoreWithAddresses]
+GO;
+
+SELECT [City] INTO #StrlsCity2 FROM [Sales].[vIndividualCustomer]
+EXCEPT
+SELECT City FROM [Sales].[vStoreWithAddresses]
+GO;
+
+SELECT TOP 10  [City], COUNT (AddressLine1) as [PPriority]
+FROM [Person].[Address] 
+WHERE [City] IN (SELECT [City] FROM [#StrlsCity])
+GROUP BY [City]
+ORDER BY [PPriority] desc
+
+/****** Скрипт для задачи 4  ******/
+
+SELECT [Sales].[SalesOrderDetail].[SalesOrderID], [Sales].[SalesOrderDetail].[ProductID], [OrderQty], [Customer].[PersonID]
+INTO #TmpData
+FROM [Sales].[SalesOrderDetail] 
+JOIN [Sales].[SalesOrderHeader]
+ON [SalesOrderDetail].[SalesOrderID] = [SalesOrderHeader].[SalesOrderID]
+JOIN [Sales].[Customer]
+ON [Customer].[CustomerID] = [SalesOrderHeader].[CustomerID]
+
+SELECT  [PersonID], [ProductID], SUM(OrderQty) AS [Total]
+INTO #TmpIDs FROM #TmpData 
+GROUP BY [PersonID], [ProductID]
+ORDER BY [Total] desc
+
+
+SELECT [LastName], [FirstName], [Name], [Total]
+FROM [Person].[Person]
+JOIN [#TmpIDs]
+ON [#TmpIDs].[PersonID] = [Person].[Person].[BusinessEntityID]
+JOIN [Production].[Product]
+ON [Product].[ProductID] = [#TmpIDs].[ProductID]
+WHERE Total > 15
+ORDER BY Total desc
