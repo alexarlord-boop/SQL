@@ -23,7 +23,7 @@ ORDER BY [PPriority] desc
 /****** Скрипт для задачи 4  ******/
 
 SELECT [Sales].[SalesOrderDetail].[SalesOrderID], [Sales].[SalesOrderDetail].[ProductID], [OrderQty], [Customer].[PersonID]
-INTO #TmpData
+INTO #TmpRaw
 FROM [Sales].[SalesOrderDetail] 
 JOIN [Sales].[SalesOrderHeader]
 ON [SalesOrderDetail].[SalesOrderID] = [SalesOrderHeader].[SalesOrderID]
@@ -31,16 +31,15 @@ JOIN [Sales].[Customer]
 ON [Customer].[CustomerID] = [SalesOrderHeader].[CustomerID]
 
 SELECT  [PersonID], [ProductID], SUM(OrderQty) AS [Total]
-INTO #TmpIDs FROM #TmpData 
+INTO [#TmpCounted] FROM [#TmpRaw]
 GROUP BY [PersonID], [ProductID]
-ORDER BY [Total] desc
-
 
 SELECT [LastName], [FirstName], [Name], [Total]
 FROM [Person].[Person]
-JOIN [#TmpIDs]
-ON [#TmpIDs].[PersonID] = [Person].[Person].[BusinessEntityID]
+JOIN [#TmpCounted]
+ON [#TmpCounted].[PersonID] = [Person].[Person].[BusinessEntityID]
 JOIN [Production].[Product]
-ON [Product].[ProductID] = [#TmpIDs].[ProductID]
+ON [Product].[ProductID] = [#TmpCounted].[ProductID]
 WHERE Total > 15
 ORDER BY Total desc
+
