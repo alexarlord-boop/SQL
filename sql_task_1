@@ -3,20 +3,12 @@
 
 
 /****** Скрипт для задачи 3  ******/
-
-SELECT [City] INTO #StrlsCity FROM [Person].[Address] 
-EXCEPT
-SELECT City FROM [Sales].[vStoreWithAddresses]
-GO;
-
-SELECT [City] INTO #StrlsCity2 FROM [Sales].[vIndividualCustomer]
-EXCEPT
-SELECT City FROM [Sales].[vStoreWithAddresses]
-GO;
-
-SELECT TOP 10  [City], COUNT (AddressLine1) as [PPriority]
-FROM [Person].[Address] 
-WHERE [City] IN (SELECT [City] FROM [#StrlsCity])
+SELECT TOP 10  [City], COUNT (EmailAddress) as [PPriority]
+FROM Sales.vIndividualCustomer 
+WHERE [City] IN (SELECT [City]
+				FROM [Person].[Address] 
+				EXCEPT
+				SELECT City FROM [Sales].[vStoreWithAddresses])
 GROUP BY [City]
 ORDER BY [PPriority] desc
 
