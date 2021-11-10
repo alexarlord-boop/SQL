@@ -1,4 +1,10 @@
 /****** Скрипт для команды задачи 2  ******/
+USE AdventureWorks2016;
+
+SELECT year(ModifiedDate) AS YearOfProft, month(ModifiedDate) AS MonthOfProfit, SUM (LineTotal) AS TotalProfit
+FROM Sales.SalesOrderDetail
+GROUP BY year(ModifiedDate), month(ModifiedDate)
+ORDER BY year(ModifiedDate), month(ModifiedDate)
 
 
 
