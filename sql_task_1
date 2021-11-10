@@ -36,66 +36,22 @@ WHERE Total > 15
 ORDER BY Total desc
 
 /****** Скрипт для задачи 5  ******/
+USE AdventureWorks2016;
 
-SELECT [SalesOrderDetail].[ProductID], [SalesOrderDetail].[OrderQty],[Product].[Name], [SalesOrderHeader].[OrderDate],[Person].[BusinessEntityID], [Person].[LastName], [Person].[FirstName]
-INTO [#TmpRaw]
-FROM [Sales].[SalesOrderDetail]
-JOIN [Production].[Product]
-ON [Product].[ProductID] = [SalesOrderDetail].[ProductID]
-JOIN [Sales].[SalesOrderHeader]
-ON [SalesOrderHeader].[SalesOrderID] = [SalesOrderDetail].[SalesOrderID]
-JOIN [Sales].[Customer]
-ON [SalesOrderHeader].[CustomerID] = [Customer].[CustomerID]
-JOIN [Person].[Person]
-ON [Customer].[PersonID] = [Person].[BusinessEntityID]
-
-
-SELECT MIN(OrderDate) AS [FirstOrderDate]
-INTO [#TmpFirst] FROM [#TmpRaw]
-GROUP BY [BusinessEntityID]
-
-ALTER TABLE #TmpFirst
-ADD OrderContent nvarchar(max) NULL
-
-
----procedure for one order content row
-CREATE PROCEDURE GetOrderContent
-(@PDT DATE)
-AS
-BEGIN
-
-UPDATE #TmpFirst SET OrderContent=(SELECT CHAR(13) + CONCAT(Name, ' Количество: ', OrderQty, ' шт.')
-              FROM #TmpRaw
-			  WHERE OrderDate = @PDT
-              FOR XML PATH ('')) WHERE FirstOrderDate=@PDT
-
-END;
----
-
----cycle for fetching individual order content
-declare @field1 date
-
-declare cur CURSOR LOCAL for
-    select FirstOrderDate from #TmpFirst
-open cur
-
-fetch next from cur into @field1
-
-while @@FETCH_STATUS = 0 BEGIN
-	exec GetOrderContent @field1
-
-	fetch next from cur into @field1
-END
-close cur
-deallocate cur
----
-
-SELECT [OrderDate],[LastName], [FirstName], [#TmpFirst].[OrderContent]
-FROM [#TmpRaw]
-JOIN [#TmpFirst]
-ON [FirstOrderDate] = [OrderDate]
-WHERE [OrderDate] IN (SELECT [FirstOrderDate] FROM [#TmpFirst])
+SELECT OrderDate, LastName, FirstName, STRING_AGG(CONVERT(NVARCHAR(max), CONCAT(Name, ' ', 'Количество: ', OrderQty, ' шт.')), CHAR(13)) AS OrderConent
+FROM (SELECT MIN(OrderDate) AS FirstOrder, BusinessEntityID
+		FROM Sales.SalesOrderHeader
+		JOIN Person.Person
+		ON Person.BusinessEntityID=SalesOrderHeader.CustomerID
+		GROUP BY BusinessEntityID) AS PersonDate
+JOIN Person.Person ON PersonDate.BusinessEntityID=Person.BusinessEntityID
+JOIN Sales.SalesOrderHeader AS SalesOrder 
+ON (PersonDate.BusinessEntityID=SalesOrder.CustomerID 
+	AND PersonDate.FirstOrder=SalesOrder.OrderDate)
+JOIN Sales.SalesOrderDetail AS Details 
+ON (Details.SalesOrderID=SalesOrder.SalesOrderID)
+JOIN Production.Product ON Details.ProductID=Product.ProductID 
+GROUP BY  Person.BusinessEntityID, OrderDate, LastName, FirstName
 ORDER BY OrderDate desc
-
 
 
