@@ -1,0 +1,33 @@
+
+/****** Скрипт для схемы БД  ******/
+CREATE DATABASE Sales;
+USE Sales;
+
+CREATE TABLE [Customer](
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	LastName nvarchar(30) NOT NULL,
+	FirstName nvarchar(30) NOT NULL,
+	Gender nvarchar(10) NOT NULL,
+	AddressLine nvarchar(30) NOT NULL
+);
+
+CREATE TABLE [Product](
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	ProductName nvarchar(30) NOT NULL,
+	Price int NOT NULL
+);
+
+CREATE TABLE [OrderDetails](
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	ProductID int NOT NULL FOREIGN KEY REFERENCES Product(ID),
+	ProductQty int NOT NULL,
+	TotalPrice int NOT NULL
+);
+
+CREATE TABLE [Order](
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	CustomerID int NOT NULL FOREIGN KEY REFERENCES Customer(ID),
+	OrderDetailsID int NOT NULL FOREIGN KEY REFERENCES OrderDetails(ID),
+	OrderDate datetime NOT NULL
+);
+
