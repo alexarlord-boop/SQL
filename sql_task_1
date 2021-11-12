@@ -79,3 +79,33 @@ ON (r.BirthDate > s.BirthDate AND r.HireDate>s.HireDate AND (r.OrganizationLevel
 ORDER BY r.OrganizationLevel, r.LastName, s.LastName
 
 
+/****** Скрипт для задачи 7  ******/
+
+CREATE PROCEDURE CountSingleManWorkerBetween (
+	@dateFrom date,
+	@dateTo date,
+	@count int OUTPUT
+	)
+AS
+BEGIN
+	SELECT BusinessEntityID, BirthDate
+	FROM HumanResources.Employee
+	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo); 
+		
+	SELECT @count = COUNT(BusinessEntityID)
+	FROM HumanResources.Employee
+	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo); 
+END;
+
+CREATE TABLE #TmpRes(
+	BusinessEntityID int,
+	BirthDate date
+);
+
+declare @df date = '1959-01-01';
+declare @dt date = '1990-01-01';
+declare @result int;
+INSERT INTO #TmpRes
+EXEC CountSingleManWorkerBetween @df, @dt, @result output
+SELECT @result as CountedResult
+SELECT * FROM #TmpRes
