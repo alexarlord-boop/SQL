@@ -61,3 +61,21 @@ GROUP BY  Person.BusinessEntityID, OrderDate, LastName, FirstName
 ORDER BY OrderDate desc
 
 
+/****** Скрипт для задачи 6  ******/
+
+SELECT CONCAT(r.LastName, ' ', LEFT(r.FirstName,1),'.', LEFT(r.MiddleName,1),'.') as ManagerName, r.HireDate as MangerHireDate, r.BirthDate as ManagerBirthDate, CONCAT(s.LastName, ' ', LEFT(s.FirstName,1),'.', LEFT(s.MiddleName,1),'.') as WorkerName, s.HireDate as WorkerHireDate, s.BirthDate as WorkerHireDate
+FROM
+
+(SELECT Person.BusinessEntityID, LastName, MiddleName, FirstName, HireDate, BirthDate, OrganizationLevel
+FROM Person.Person
+JOIN HumanResources.Employee
+ON Person.BusinessEntityID=Employee.BusinessEntityID) as r
+JOIN
+(SELECT Person.BusinessEntityID, LastName, MiddleName, FirstName, HireDate, BirthDate, OrganizationLevel
+FROM Person.Person
+JOIN HumanResources.Employee
+ON Person.BusinessEntityID=Employee.BusinessEntityID) as s
+ON (r.BirthDate > s.BirthDate AND r.HireDate>s.HireDate AND (r.OrganizationLevel=(s.OrganizationLevel - 1)))
+ORDER BY r.OrganizationLevel, r.LastName, s.LastName
+
+
