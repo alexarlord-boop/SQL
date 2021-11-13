@@ -9,6 +9,7 @@ ORDER BY year(ModifiedDate), month(ModifiedDate)
 
 
 /****** Скрипт для задачи 3  ******/
+
 SELECT TOP 10  [City], COUNT (BusinessEntityID) as [PPriority]
 FROM Sales.vIndividualCustomer 
 WHERE [City] IN (SELECT [City]
@@ -17,6 +18,8 @@ WHERE [City] IN (SELECT [City]
 				SELECT City FROM [Sales].[vStoreWithAddresses])
 GROUP BY [City]
 ORDER BY [PPriority] desc
+
+
 
 /****** Скрипт для задачи 4  ******/
 
