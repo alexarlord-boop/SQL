@@ -1,36 +1,64 @@
 
 /****** Скрипт для схемы БД  ******/
+---DROP DATABASE Sales
+
 CREATE DATABASE Sales;
 USE Sales;
 
 CREATE TABLE [Customer](
 	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	LastName nvarchar(30) NOT NULL,
-	FirstName nvarchar(30) NOT NULL,
-	Gender nvarchar(10) NOT NULL,
-	AddressLine nvarchar(30) NOT NULL
+	LastName nvarchar(50) NOT NULL,
+	MiddleName nvarchar(50) DEFAULT NULL,
+	FirstName nvarchar(50) NOT NULL,
+	Gender nchar(1) NOT NULL,
+	City nvarchar(100) NOT NULL,
+	AddressLine1 nvarchar(100) NOT NULL
+);
+
+CREATE TABLE [Currency](
+	CurrID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	Currency nvarchar(10) NOT NULL
 );
 
 CREATE TABLE [Product](
 	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	ProductName nvarchar(30) NOT NULL,
-	Price int NOT NULL
+	ProductName nvarchar(50) NOT NULL,
+	ListPrice decimal NOT NULL,
+	Currency int NOT NULL FOREIGN KEY REFERENCES Currency(CurrID)
 );
 
-CREATE TABLE [OrderDetails](
-	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	ProductID int NOT NULL FOREIGN KEY REFERENCES Product(ID),
-	ProductQty int NOT NULL,
-	TotalPrice int NOT NULL
+CREATE TABLE [Designation](
+	DesID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	Designation nvarchar(10) NOT NULL
 );
 
 CREATE TABLE [Order](
-	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	OrderID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	CustomerID int NOT NULL FOREIGN KEY REFERENCES Customer(ID),
-	OrderDetailsID int NOT NULL FOREIGN KEY REFERENCES OrderDetails(ID),
+	TotalPrice decimal NOT NULL,   
+	Currency int NOT NULL FOREIGN KEY REFERENCES Currency(CurrID),
 	OrderDate datetime NOT NULL
 );
 
+CREATE TABLE [OrderBill](
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	OrderID int NOT NULL FOREIGN KEY REFERENCES Order(OrderID),
+	ProductID int NOT NULL FOREIGN KEY REFERENCES Product(ID),
+	SoldUnitPrice decimal NOT NULL,
+	ProductQty int NOT NULL,
+	Designation int NOT NULL FOREIGN KEY REFERENCES Designation(DesID)
+);
+
+
+SET IDENTITY_INSERT Designation ON;
+INSERT INTO Designation(DesID, Designation) Values(1, 'шт'),(2, 'м3'),(3, 'м.п.');
+SET IDENTITY_INSERT Designation OFF;
+GO
+
+SET IDENTITY_INSERT Currency ON;
+INSERT INTO Currency(CurrID, Currency) Values(1, 'р');
+SET IDENTITY_INSERT Currency OFF;
+...
 
 
 
