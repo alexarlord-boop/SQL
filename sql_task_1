@@ -80,7 +80,7 @@ ORDER BY r.OrganizationLevel, r.LastName, s.LastName
 
 
 /****** Скрипт для задачи 7  ******/
-
+---DROP PROCEDURE CountSingleManWorkerBetween
 CREATE PROCEDURE CountSingleManWorkerBetween (
 	@dateFrom date,
 	@dateTo date,
@@ -88,7 +88,7 @@ CREATE PROCEDURE CountSingleManWorkerBetween (
 	)
 AS
 BEGIN
-	SELECT BusinessEntityID, BirthDate
+	SELECT BusinessEntityID, BirthDate, NationalIDNumber, OrganizationNode, MaritalStatus, Gender, HireDate
 	FROM HumanResources.Employee
 	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo); 
 		
@@ -96,10 +96,15 @@ BEGIN
 	FROM HumanResources.Employee
 	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo); 
 END;
-
+---DROP TABLE #TmpRes
 CREATE TABLE #TmpRes(
 	BusinessEntityID int,
-	BirthDate date
+	BirthDate date,
+	NationalIDNumber nvarchar(50),
+	OrganizationNode hierarchyid,
+	MaritalStatus nchar(1),
+	Gender nchar(1),
+	HireDate date
 );
 
 declare @df date = '1959-01-01';
