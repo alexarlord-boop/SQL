@@ -124,8 +124,17 @@ SET IDENTITY_INSERT Currency OFF;
 
 Задача 5
 Ответ:
-	- так как в запросе задействованы поле из индекса, скорость исполнения повысится. 
-	- определить действительно нужные столбцы и указать вместо *, добавить их в покрывающий индекс.
+	Некорректный индекс, не даст преимущества.
+	Что сделать: убрать поле LastName из индекса. Сделать отфильтрованный  индекс с условием DateOfBirth >'2000-01-01'. 
+		    Итого:
+			CREATE INDEX idx_Employees_DateOfBirth ON Employees(DateOfBirth)
+			WHERE DateOfBirth >'2000-01-01';
+			
+			SELECT *
+			FROM Employees
+			WHERE DateOfBirth >'2000-01-01'
+
+
 
 
 
