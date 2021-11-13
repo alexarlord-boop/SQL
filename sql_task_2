@@ -69,6 +69,8 @@ SET IDENTITY_INSERT Currency OFF;
 	Некластерный Индекс idx_Employees_TabNum для столбца TabNum на основе столбца кластеризованной таблицы Employees,
 	Возможно среди 20 полей есть поля с модификатором UNIQUE – для них будет создан некластерный индекс.
 
+
+
 Задача 2
 Ответ:
 	1)Почему поиск с использованием индекса по полю TabNum для данного запроса – это хорошо?
@@ -102,17 +104,22 @@ SET IDENTITY_INSERT Currency OFF;
 			FROM Employees
 			WHERE DateOfBirth > '1998-01-01' AND DateOfBirth < '1999-01-01';
 
-	
-
 
 
 Задача 4
 Ответ:
-	-повысит скорость исполнения, так как дает возможность отменить сортировку строк на выходе
-	-поменять порядок колонок (DateOfBirth, LastName), и проверить 
-	(улучшения будут, если колонка DateOfBirth обладает более высокой селективностью) /
-	-определить действительно нужные столбцы и указать вместо *, добавить их в покрывающий индекс.
-
+	Повысит скорость исполнения.
+	
+	Что сделать: добавить условие LastName =N'Иванов' в отфильтрованный индекс, добавить модификатор сортировки DESC в индекс после поля DateOfBirth.
+		     Итого:
+			CREATEINDEX idx_Employees_LastName_DateOfBirth ON Employees(LastName, DateOfBirth DESC)
+			WHERE LastName =N'Иванов';
+			
+			SELECT TOP 1 *
+			FROM Employees
+			WHERE LastName =N'Иванов'
+			ORDERBY DateOfBirth DESC
+	
 
 
 Задача 5
