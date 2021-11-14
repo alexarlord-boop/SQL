@@ -1,0 +1,49 @@
+-- Задача 1+
+--DROP INDEX idx_StartTime ON Marketing.WebLog
+
+CREATE INDEX idx_StartTime ON Marketing.WebLog(SessionStart,ServerID, UserName)
+WHERE SessionStart >= '2010-08-30 16:27'
+
+SELECT TOP(5000) wl.SessionID, wl.ServerID, wl.UserName 
+FROM Marketing.WebLog AS wl
+WHERE wl.SessionStart >= '2010-08-30 16:27'
+ORDER BY wl.SessionStart, wl.ServerID;
+GO
+
+
+
+-- Задача 2+
+--DROP INDEX idx_PC ON Marketing.PostalCode
+
+CREATE INDEX idx_PC ON Marketing.PostalCode (PostalCode, Country, StateCode )
+WHERE StateCode = 'KY';
+
+SELECT  PostalCode, Country
+FROM Marketing.PostalCode 
+WHERE StateCode = 'KY'
+ORDER BY StateCode, PostalCode
+GO
+
+
+
+-- Задача 3+
+--DROP INDEX idx_LN_FN ON Marketing.Prospect;
+--GO
+--DROP INDEX idx_LN_Smith ON Marketing.Prospect
+
+CREATE INDEX idx_LN_FN ON Marketing.Prospect (LastName, FirstName);
+GO
+CREATE INDEX idx_LN_Smith ON Marketing.Prospect (LastName)
+WHERE LastName = 'Smith';
+GO
+
+SELECT LastName, FirstName 
+FROM Marketing.Prospect
+ORDER BY LastName, FirstName;
+GO
+SELECT * 
+FROM Marketing.Prospect WITH (INDEX = idx_LN_Smith)
+WHERE LastName = 'Smith';
+
+
+
