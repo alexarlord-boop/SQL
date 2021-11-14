@@ -72,3 +72,38 @@ GROUP BY c.CategoryName,
 	sc.SubcategoryName,
 	pm.ProductModel
 HAVING COUNT(p.ProductID) > 1
+
+
+
+-- Задача 4(предположение/попытка)
+
+CREATE VIEW vProductCategory
+WITH SCHEMABINDING
+AS 
+SELECT
+	c.CategoryName,
+	sc.SubcategoryName,
+	pm.ProductModel,
+	p.ProductID
+FROM Marketing.ProductModel pm
+	JOIN Marketing.Product p
+		ON p.ProductModelID = pm.ProductModelID
+	JOIN Marketing.Subcategory sc
+		ON sc.SubcategoryID = p.SubcategoryID
+	JOIN Marketing.Category c
+		ON c.CategoryID = sc.CategoryID
+
+
+CREATE UNIQUE CLUSTERED INDEX idx_ProductCategory ON vProductCategory(ProductID)
+CREATE INDEX idx_1 ON vProductCategory(CategoryName, SubcategoryName, ProductModel);
+
+SELECT
+	CategoryName,
+	SubcategoryName,
+	ProductModel,
+	COUNT(ProductID) AS ModelCount
+FROM vProductCategory 
+GROUP BY CategoryName,
+	SubcategoryName,
+	ProductModel
+HAVING COUNT(ProductID) > 1
