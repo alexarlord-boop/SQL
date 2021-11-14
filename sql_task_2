@@ -32,15 +32,15 @@
 	Чтобы найти строки, подходящие под условие WHERE, необходимо просканировать кластерный индекс и вычислить значение этой функции. 
 	Индекс по дате не даст преимущества.
 	
-	Что сделать: задать границы для даты в условии: DateOfBirth > '1998-01-01' AND DateOfBirth < '1999-01-01'.
+	Что сделать: задать границы для даты в условии: DateOfBirth >= '1998-01-01' AND DateOfBirth < '1999-01-01'.
 		     Добавить это в условие отфильтрованного индекса.
 		     Итого:
 			CREATE INDEX idx_Employees_DateOfBirth ON Employees(DateOfBirth)
-			WHERE DateOfBirth > '1998-01-01' AND DateOfBirth < '1999-01-01';
+			WHERE DateOfBirth >= '1998-01-01' AND DateOfBirth < '1999-01-01';
 
 			SELECT COUNT(*)
 			FROM Employees
-			WHERE DateOfBirth > '1998-01-01' AND DateOfBirth < '1999-01-01';
+			WHERE DateOfBirth >= '1998-01-01' AND DateOfBirth < '1999-01-01';
 
 
 
