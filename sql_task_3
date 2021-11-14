@@ -13,10 +13,9 @@ GO
 
 
 -- Задача 2+
---DROP INDEX idx_PC ON Marketing.PostalCode
+---DROP INDEX idx_P ON Marketing.PostalCode
 
-CREATE INDEX idx_PC ON Marketing.PostalCode (PostalCode, Country, StateCode )
-WHERE StateCode = 'KY';
+CREATE INDEX idx_P ON Marketing.PostalCode(StateCode)
 
 SELECT  PostalCode, Country
 FROM Marketing.PostalCode 
