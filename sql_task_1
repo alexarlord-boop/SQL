@@ -21,7 +21,7 @@ ORDER BY [PPriority] desc
 
 
 
-/****** Скрипт для задачи 4  ******/
+/****** Скрипт для задачи 4  ******/ (Зачтено)
 
 SELECT [Sales].[SalesOrderDetail].[SalesOrderID], [Sales].[SalesOrderDetail].[ProductID], [OrderQty], [Customer].[PersonID]
 INTO #TmpRaw
