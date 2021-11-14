@@ -47,7 +47,7 @@ ORDER BY Total desc
 /****** Скрипт для задачи 5  ******/
 USE AdventureWorks2016;
 
-SELECT OrderDate, LastName, FirstName, STRING_AGG(CONVERT(NVARCHAR(max), CONCAT(Name, ' ', 'Количество: ', OrderQty, ' шт.')), CHAR(13)) AS OrderConent
+SELECT OrderDate, LastName, FirstName, STRING_AGG(CONVERT(NVARCHAR(max), CONCAT(Name, ' ', N'Количество: ', OrderQty, N' шт.')), CHAR(13)) AS OrderConent
 FROM (SELECT MIN(OrderDate) AS FirstOrder, BusinessEntityID
 		FROM Sales.SalesOrderHeader
 		JOIN Person.Person
