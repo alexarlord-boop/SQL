@@ -41,9 +41,8 @@ SELECT LastName, FirstName
 FROM Marketing.Prospect
 ORDER BY LastName, FirstName;
 GO
-SELECT * 
+SELECT LastName
 FROM Marketing.Prospect WITH (INDEX = idx_LN_Smith)
 WHERE LastName = 'Smith';
-
 
 
