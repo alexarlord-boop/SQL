@@ -1,7 +1,7 @@
 -- Задача 1+
 --DROP INDEX idx_StartTime ON Marketing.WebLog
 
-CREATE INDEX idx_StartTime ON Marketing.WebLog(SessionStart,ServerID, UserName)
+CREATE INDEX idx_StartTime ON Marketing.WebLog(SessionStart, ServerID, SessionID, UserName)
 WHERE SessionStart >= '2010-08-30 16:27'
 
 SELECT TOP(5000) wl.SessionID, wl.ServerID, wl.UserName 
