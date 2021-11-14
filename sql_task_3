@@ -45,3 +45,30 @@ FROM Marketing.Prospect WITH (INDEX = idx_LN_Smith)
 WHERE LastName = 'Smith';
 
 
+
+-- Задача 4
+--DROP INDEX idx_Category ON Marketing.Category
+CREATE INDEX idx_Category ON Marketing.Category(CategoryName)
+
+--DROP INDEX idx_SubCategory ON Marketing.SubCategory
+CREATE INDEX idx_SubCategory ON Marketing.SubCategory(SubCategoryName)
+
+--DROP INDEX idx_Model ON Marketing.Product
+CREATE INDEX idx_Model ON Marketing.Product(ProductModelID)
+
+SELECT
+	c.CategoryName,
+	sc.SubcategoryName,
+	pm.ProductModel,
+	COUNT(p.ProductID) AS ModelCount
+FROM Marketing.ProductModel pm
+	JOIN Marketing.Product p
+		ON p.ProductModelID = pm.ProductModelID
+	JOIN Marketing.Subcategory sc
+		ON sc.SubcategoryID = p.SubcategoryID
+	JOIN Marketing.Category c
+		ON c.CategoryID = sc.CategoryID
+GROUP BY c.CategoryName,
+	sc.SubcategoryName,
+	pm.ProductModel
+HAVING COUNT(p.ProductID) > 1
